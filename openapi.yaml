@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: ddcg98@gmail.com
+    name: Daniel del Canto de Guzmán
+  description: This API manages creation, deletion and modification of carts.
+  title: OneBox E-commerce Challenge
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- description: Operations related to cart management.
+  name: Carts
+paths:
+  /cart:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+      responses:
+        "204":
+          $ref: '#/components/responses/NoContent'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Data structure containing the information about the error occurred
+            during a Not Found error.
+      summary: Deletes a cart given its id.
+      tags:
+      - Carts
+      x-accepts: application/json
+      x-tags:
+      - tag: Carts
+    get:
+      description: Retrieves a cart information given its id.
+      operationId: retrieveCart
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItems'
+          description: Response containing the cart information.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Data structure containing the information about the error occurred
+            during a Not Found error.
+      summary: Retrieves a cart information.
+      tags:
+      - Carts
+      x-accepts: application/json
+      x-tags:
+      - tag: Carts
+    patch:
+      description: Adds items to a cart given its id and the new items.
+      operationId: addProducts
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+      requestBody:
+        $ref: '#/components/requestBodies/AddItemsRequest'
+      responses:
+        "204":
+          $ref: '#/components/responses/NoContent'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Data structure containing the information about the error occurred
+            during a Not Found error.
+      summary: Retrieves a cart information.
+      tags:
+        - Carts
+      x-accepts: application/json
+      x-tags:
+        - tag: Carts
+
+    post:
+      description: Creates a cart to store products with an expiration time of 10 minutes.
+      operationId: createCart
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedCart'
+          description: Response containing the cart identifier when it's created.
+      summary: Creates a cart with products.
+      tags:
+      - Carts
+      x-accepts: application/json
+      x-tags:
+      - tag: Carts
+components:
+  requestBodies:
+    AddItemsRequest:
+      description: This request body contains the items to add to the cart.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CartItems'
+  responses:
+    CreatedCartResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreatedCart'
+      description: Response containing the cart identifier when it's created.
+    CartInformationResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CartItems'
+      description: Response containing the cart information.
+    NoContent:
+      description: The specified resource has no content.
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+      description: Data structure containing the information about the error occurred
+        during an Internal Server Error.
+  schemas:
+    Errors:
+      description: Data structure containing the details of errors.
+      properties:
+        errors:
+          description: List of errors
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+      required:
+      - errors
+      type: object
+    Error:
+      description: Data structure containing the error details.
+      properties:
+        code:
+          description: Unique alphanumeric human readable error code.
+          example: badRequest
+          type: string
+        message:
+          description: Brief summary of the reported issue.
+          example: The request must contain an identifier.
+          type: string
+        level:
+          description: Level of the reported issue.
+          enum:
+          - ERROR
+          - FATAL
+          - INFO
+          - WARNING
+          type: string
+        description:
+          description: Detailed description of the reported issue.
+          example: This error occurs when some parameters of the request are missing.
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    CreatedCart:
+      description: Data structure containing a cart identifier.
+      example:
+        id: 1680419009
+      properties:
+        id:
+          description: The cart identifier.
+          type: string
+      required:
+      - id
+      type: object
+    CartItems:
+      description: Data structure containing the items of a cart.
+      properties:
+        items:
+          description: List containing the items of a cart.
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+      required:
+      - items
+      type: object
+    Product:
+      description: Data structure containing information of a specific cart, with
+        an id, description and an amount.
+      properties:
+        id:
+          description: Identifier of a product
+          example: 1238944898
+          format: int64
+          type: integer
+        description:
+          description: Description of the product.
+          example: This ticket grants you VIP privileges in all festival venus.
+          type: string
+        amount:
+          description: Number of items you will buy of this product.
+          format: int32
+          type: integer
+      required:
+      - amount
+      - description
+      - id
+      type: object
+  parameters:
+    CartId:
+      name: cartId
+      in: query
+      description: The Id of the requested Cart
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 169093212
+

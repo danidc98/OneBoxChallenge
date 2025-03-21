@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.onebox.challenge</groupId>
+    <artifactId>onebox-challenge</artifactId>
+    <packaging>jar</packaging>
+    <name>onebox-challenge</name>
+    <version>1.0.0</version>
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <springdoc.version>1.6.4</springdoc.version>
+    </properties>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.2</version>
+    </parent>
+    <build>
+        <plugins>
+            <!--            <plugin>-->
+            <!--                <groupId>org.springframework.boot</groupId>-->
+            <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.12.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <inputSpec>${project.basedir}/openapi.yaml</inputSpec>
+                    <output>${project.basedir}/OneBoxChallengeApi</output>
+                    <generatorName>spring</generatorName>
+                    <configOptions>
+                        <library>spring-boot</library>
+                        <generateTests>false</generateTests>
+                        <failOnUnknownProperties>true</failOnUnknownProperties>
+                        <apiPackage>com.onebox.challenge.api</apiPackage>
+                        <modelPackage>com.onebox.challenge.DTO</modelPackage>
+                        <invokerPackage>com.onebox.challenge</invokerPackage>
+                        <configPackage>com.onebox.challenge.configuration</configPackage>
+                        <useSpringResponseEntity>true</useSpringResponseEntity>
+<!--                        <javaVersion>21</javaVersion>-->
+                        <useSpringController>true</useSpringController>
+                        <serializationLibrary>jackson</serializationLibrary>
+                        <useSpringBoot3>true</useSpringBoot3>
+                        <useSpringControllers>true</useSpringControllers>
+                        <groupId>com.onebox.challenge</groupId>
+                        <artifactId>onebox-api</artifactId>
+                        <generateClientAsBean>true</generateClientAsBean>
+                    </configOptions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
